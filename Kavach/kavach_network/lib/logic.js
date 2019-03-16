@@ -18,11 +18,11 @@
  */
 
 /**
- * Sample transaction
+ * Transaction to use the data transaction
  * @param {kavachnetwork.PutDtBlock} dataReq
  * @transaction
  */
-/*async function sampleTransaction() {
+/*async function sampleTransaction(dataReq) {
     // Save the old value of the asset.
     const oldValue = tx.asset.value;
 
@@ -40,24 +40,50 @@
     event.oldValue = oldValue;
     event.newValue = tx.newValue;
     emit(event);
-}*/
-
+}
+*/
 function putDtBlock(dataReq) {
-    // Save the old value of the asset.
-    const oldValue = tx.asset.value;
+    
+    let assetRegistryD = getAssetRegistry('kavachnetwork.TData');
+    var currentParticipant = getCurrentParticipant();
+    var tempAsset;
+    foreach(asset in assetRegistryD)
+    {
 
-    // Update the asset with the new value.
-    tx.asset.value = tx.newValue;
+        if(asset.dataUser==currentParticipant.bankID)
+        {
+            tempAsset=asset;
+        }
+    }
 
-    // Get the asset registry for the asset.
-    const assetRegistry = await getAssetRegistry('kavachnetwork.SampleAsset');
-    // Update the asset in the asset registry.
-    await assetRegistry.update(tx.asset);
 
-    // Emit an event for the modified asset.
-    let event = getFactory().newEvent('kavachnetwork', 'SampleEvent');
-    event.asset = tx.asset;
-    event.oldValue = oldValue;
-    event.newValue = tx.newValue;
-    emit(event);
+    let assetRegistryA = getAssetRegistry('kavachnetwork.TAccess');
+    
+
+    if(assetRegistryA.exists(dataReq.acBlockID))
+    {
+
+        var keyArray=[];
+        //const assetRegistry = await getAssetRegistry('kavachnetwork.TAccess');
+        const localAsset = await assetRegistryA.get(dataReq.acBlockID);
+        foreach(f in tempAsset.reqFields)
+        {
+            foreach(field in localAsset.fieldTable)
+            {
+                foreach(permID in field.permitted_ID)
+                {
+                    if(f==field && permID==currentParticipant.bankID)
+                        keyArray.push(field.key);
+                        
+                }
+            }
+        }
+        return keyArray;
+
+    }
+    else
+    {
+        console.log("Unregistered User!!!");
+    }
+    
 }

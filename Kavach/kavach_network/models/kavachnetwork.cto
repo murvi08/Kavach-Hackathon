@@ -96,6 +96,8 @@ transaction PutAcBlock{
 transaction PutDtBlock{
   --> TData tdata
   --> Bank dataUser
+  --> TAccess taccess
+  o String acBlockID
 }
 
 
