@@ -22,11 +22,11 @@ namespace kavachnetwork
 //******** PARTICIPANTS*****//
 
 /*sampleParticipant*/
-participant SampleParticipant identified by participantId {
+/*participant SampleParticipant identified by participantId {
   o String participantId
   o String firstName
   o String lastName
-}
+}*/
 /*remove this after*/
 
 
@@ -35,48 +35,73 @@ participant Bank identified by bankId {
   o String bankName
 }
 
-participant User identified by AdharId {
-  o String AdharId
-  o String firstName
-  o String lastName
+participant User identified by adharId {
+  o String adharId
+  o String name
+  o String thumb
+  o String email
+  o String address
+  o String phone
 }
 
 //******* ASSEST *****//
-asset SampleAsset identified by assetId {
+/*asset SampleAsset identified by assetId {
   o String assetId
   --> SampleParticipant owner
   o String value
-}
+}*/
 
 concept Field {
+  o String fname
   o String[] permitted_ID     /* bankID of permitted banks for using the field are inserted in this array*/
+  o String key
 }
 
-concept field_table {
+
+concept FieldTable {
+  o Field adharID
   o Field name
+  o Field thumb
+  o Field email
+  o Field address
+  o Field phone
 }
-asset TAccess identified by TAID {
-  o String TAID
-  --> SampleParticipant owner
-  o String value
+asset TAccess identified by TAId{
+  o String TAId
+  --> User owner
+  o FieldTable fieldTable  /*permission in the table*/
+  o DateTime timeStamp
 }
 
-asset TData identified by assetId {
-  o String assetId
-  --> SampleParticipant owner
-  o String value
+asset TData identified by TDId {
+  o String TDId
+  --> Bank dataUser
+  o String[] reqFields  /* names of the fields that the bak requests*/
+  o DateTime timeStamp
 }
 
 
 //******** TRANSACTIONS *******//
-transaction SampleTransaction {
+/*transaction SampleTransaction {
   --> SampleAsset asset
   o String newValue
+}*/
+
+//**** Two transactions --> represents the relation with the components *******//
+transaction PutAcBlock{
+  --> TAccess taccess
+  --> User owner
 }
 
+transaction PutDtBlock{
+  --> TData tdata
+  --> Bank dataUser
+}
+
+
 //******* EVENTS ********//
-event SampleEvent {
+/*event SampleEvent {
   --> SampleAsset asset
   o String oldValue
   o String newValue
-}
+}*/
