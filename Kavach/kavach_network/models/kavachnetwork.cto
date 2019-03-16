@@ -90,6 +90,7 @@ asset TData identified by TDId {
 transaction PutAcBlock{
   --> TAccess taccess
   --> User owner
+   o FieldTable fieldTable
 }
 
 transaction PutDtBlock{
