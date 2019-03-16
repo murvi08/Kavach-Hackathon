@@ -12,17 +12,17 @@
  * limitations under the License.
  */
 
-'use strict';
+//'use strict';
 /**
  * Write your transction processor functions here
  */
 
 /**
- * Sample transaction
- * @param {kavachnetwork.SampleTransaction} sampleTransaction
+ * Transaction to use the data transaction
+ * @param {kavachnetwork.PutDtBlock} dataReq
  * @transaction
  */
-async function sampleTransaction(tx) {
+/*async function sampleTransaction(dataReq) {
     // Save the old value of the asset.
     const oldValue = tx.asset.value;
 
@@ -40,4 +40,50 @@ async function sampleTransaction(tx) {
     event.oldValue = oldValue;
     event.newValue = tx.newValue;
     emit(event);
+}
+*/
+function putDtBlock(dataReq) {
+    
+    let assetRegistryD = getAssetRegistry('kavachnetwork.TData');
+    var currentParticipant = getCurrentParticipant();
+    var tempAsset;
+    foreach(asset in assetRegistryD)
+    {
+
+        if(asset.dataUser==currentParticipant.bankID)
+        {
+            tempAsset=asset;
+        }
+    }
+
+
+    let assetRegistryA = getAssetRegistry('kavachnetwork.TAccess');
+    
+
+    if(assetRegistryA.exists(dataReq.acBlockID))
+    {
+
+        var keyArray=[];
+        //const assetRegistry = await getAssetRegistry('kavachnetwork.TAccess');
+        const localAsset = await assetRegistryA.get(dataReq.acBlockID);
+        foreach(f in tempAsset.reqFields)
+        {
+            foreach(field in localAsset.fieldTable)
+            {
+                foreach(permID in field.permitted_ID)
+                {
+                    if(f==field && permID==currentParticipant.bankID)
+                        keyArray.push(field.key);
+                        
+                }
+            }
+        }
+        return keyArray;
+
+    }
+    else
+    {
+        console.log("Unregistered User!!!");
+    }
+    
 }
