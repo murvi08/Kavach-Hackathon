@@ -33,11 +33,10 @@ participant SampleParticipant identified by participantId {
 participant Bank identified by bankId {
   o String bankId
   o String bankName
-  o String branchName
 }
 
-participant User identified by uesrId {
-  o String uesrId
+participant User identified by AdharId {
+  o String AdharId
   o String firstName
   o String lastName
 }
