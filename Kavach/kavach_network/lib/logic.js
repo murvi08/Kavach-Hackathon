@@ -22,6 +22,60 @@
  * @param {kavachnetwork.PutDtBlock} dataReq
  * @transaction
  */
+function putDtBlock(dataReq) {
+    /*
+    let assetRegistryD = getAssetRegistry('kavachnetwork.TData');
+    var currentParticipant = getCurrentParticipant();
+    var tempAsset;
+  	var temp=assetRegistryD.getAll();
+    temp.forEach(function(asset){
+        if(asset.dataUser==currentParticipant.bankID)
+        {
+            tempAsset=asset;
+        }
+    });*/
+  		var currentParticipant = getCurrentParticipant();
+  		return getAssetRegistry('kavachnetwork.TData')
+            .then(function (TDataRegistry) {
+              // Get all of the vehicles in the vehicle asset registry.
+              var temp= TDataRegistry.getAll();
+          });
+  		temp.forEach(function(asset){
+        if(asset.dataUser==currentParticipant.bankID)
+        {
+            tempAsset=asset;
+        }});
+
+
+    let assetRegistryA = getAssetRegistry('kavachnetwork.TAccess');
+    
+
+    if(assetRegistryA.exists(dataReq.acBlockID))
+    {
+        var keyArray=[];
+        //const assetRegistry = await getAssetRegistry('kavachnetwork.TAccess');
+        var localAsset = assetRegistryA.get(dataReq.acBlockID);
+        tempAsset.reqFields.forEach(function(f)
+        {
+            localAsset.fieldTable.forEach(function(field)
+            {
+                field.permitted_ID.forEach(function(permID)
+                {
+                    if(f==field && permID==currentParticipant.bankID)
+                        keyArray.push(field.key);
+                        
+                });
+            });
+        });
+        return keyArray;
+
+    }
+    else
+    {
+        console.log("Unregistered User!!!");
+    }
+    
+}
 /*async function sampleTransaction(dataReq) {
     // Save the old value of the asset.
     const oldValue = tx.asset.value;
@@ -42,48 +96,3 @@
     emit(event);
 }
 */
-function putDtBlock(dataReq) {
-    
-    let assetRegistryD = getAssetRegistry('kavachnetwork.TData');
-    var currentParticipant = getCurrentParticipant();
-    var tempAsset;
-    foreach(asset in assetRegistryD)
-    {
-
-        if(asset.dataUser==currentParticipant.bankID)
-        {
-            tempAsset=asset;
-        }
-    }
-
-
-    let assetRegistryA = getAssetRegistry('kavachnetwork.TAccess');
-    
-
-    if(assetRegistryA.exists(dataReq.acBlockID))
-    {
-
-        var keyArray=[];
-        //const assetRegistry = await getAssetRegistry('kavachnetwork.TAccess');
-        const localAsset = await assetRegistryA.get(dataReq.acBlockID);
-        foreach(f in tempAsset.reqFields)
-        {
-            foreach(field in localAsset.fieldTable)
-            {
-                foreach(permID in field.permitted_ID)
-                {
-                    if(f==field && permID==currentParticipant.bankID)
-                        keyArray.push(field.key);
-                        
-                }
-            }
-        }
-        return keyArray;
-
-    }
-    else
-    {
-        console.log("Unregistered User!!!");
-    }
-    
-}

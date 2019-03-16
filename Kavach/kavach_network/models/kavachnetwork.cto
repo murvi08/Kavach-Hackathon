@@ -52,7 +52,6 @@ participant User identified by adharId {
 }*/
 
 concept Field {
-  o String fname
   o String[] permitted_ID     /* bankID of permitted banks for using the field are inserted in this array*/
   o String key
 }
